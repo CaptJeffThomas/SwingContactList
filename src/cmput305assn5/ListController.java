@@ -3,16 +3,29 @@
 
 package cmput305assn5;
 
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.*;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.JOptionPane;
-import javax.swing.JFrame;
+import javax.swing.ImageIcon;
+import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import javax.swing.*;
+
 
 public class ListController {
     
@@ -21,6 +34,7 @@ public class ListController {
     private JTable contactTable;
     private DefaultTableModel tableModel;
     private Contact newContact;
+    int extreme = 0;
     
     
     public ListController(ListGUI gui){
@@ -31,6 +45,7 @@ public class ListController {
         
         view.addNewButtonListener(new NewListener());
         view.addDeleteButtonListener(new DeleteListener());
+        view.addExtremeButtonListener(new ExtremeListener());
         
         initTableModel();
         initListSelectionModel();
@@ -39,7 +54,12 @@ public class ListController {
     
       //creates our local table model
      private void initTableModel() {
-        tableModel = new DefaultTableModel();
+         //disables direct editing of cells within the table.
+        tableModel = new DefaultTableModel(){
+            public boolean isCellEditable(int rowIndex, int mColIndex) {
+                return false;
+            }
+        };
         tableModel.addColumn("Name");
         tableModel.addColumn("Email");
         contactTable.setModel(tableModel);        
@@ -51,6 +71,7 @@ public class ListController {
         lsm.addListSelectionListener(new CourseTableListener());
     }
     
+   
     //pops up New Contact menu
     private class NewListener implements ActionListener {
 
@@ -60,6 +81,9 @@ public class ListController {
            contactMenu.addCancelButtonListener(new CancelButtonListener(contactMenu));
            contactMenu.addOKButtonListener(new OkButtonListener(contactMenu));
            contactMenu.setVisible(true);
+           if(extreme == 1){
+                extremeSpawn();
+           }
         }
     }
     
@@ -75,6 +99,9 @@ public class ListController {
                 view.setDetailedText("");
                 view.setEnabledDeleteButton(false);
             }
+            if(extreme == 1){
+                extremeSpawn();
+           }
         }
     }
     
@@ -82,7 +109,6 @@ public class ListController {
     private class CourseTableListener implements ListSelectionListener {
         @Override
         public void valueChanged(ListSelectionEvent e) {
-            view.setDetailedText("");
             ListSelectionModel lsm = (ListSelectionModel) e.getSource();
             if (!e.getValueIsAdjusting()) {
                 //if we have selected a contact, enable delete and display details
@@ -106,6 +132,9 @@ public class ListController {
         @Override
         public void actionPerformed(ActionEvent e) {
             menu.setVisible(false);
+            if(extreme == 1){
+                extremeSpawn();
+           }
             
         }
         
@@ -134,13 +163,14 @@ public class ListController {
                     Object[] rowData = {fName + " " + lName, email};
                     tableModel.insertRow(sortedPosition, rowData);
                     menu.setVisible(false);
+                    if(extreme == 1){
+                        extremeSpawn();
+                    }
                 }
                 //required fields need to be filled.  pop-up a warning to user.
                 else{     
                      JOptionPane.showMessageDialog(new JFrame(), " At least a name and email must be entered. ", "Error Message",JOptionPane.ERROR_MESSAGE);
                 }
-                
-  
         }
     }
 
@@ -180,6 +210,64 @@ public class ListController {
         this.view.setDetailedText(details);
         
     }
+    
+      
+    //HARD TO LISTEN OVER ALL THIS EXTREME!  GOOD THING WE HAVE THIS! 
+    private class ExtremeListener implements ItemListener{
+          
+        @Override 
+        public void itemStateChanged(ItemEvent e){
+             if(e.getStateChange() == ItemEvent.SELECTED){
+                UIManager.put("OptionPane.background", randColor());
+                UIManager.put("Panel.background", randColor());
+                view.getContentPane().setBackground(Color.red);
+                view.setTitle("EXTREME Address BOOK");
+                extreme = 1;
+            }
+            else{
+                UIManager.put("OptionPane.background", new Color(240,240,240));
+                UIManager.put("Panel.background", new Color(240,240,240));
+                view.getContentPane().setBackground(new Color(240,240,240));
+                view.setTitle("Address Book");
+                extreme = 0;
+            } 
+        }
+        
+    }
+    
+    //when extreme mode is turned on, all buttons generate windows with random positions, msgs, and colors
+    private void extremeSpawn(){
+   
+        //ImageIcon icon = new ImageIcon("neon-snowboard.jpg");
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        Random r = new Random(System.currentTimeMillis());
+        int x =  r.nextInt((int)screenSize.getWidth());
+        int y = r.nextInt((int)screenSize.getHeight());
+        JOptionPane johnny = new JOptionPane();
+        johnny.setSize(500, 500);
+        johnny.setLocation(x,y);
+        UIManager.put("OptionPane.background", randColor());
+        UIManager.put("Panel.background", randColor());
+       
+        //johnny.setIcon(icon);
+        //johnny.setVisible(true);
+        JOptionPane.showMessageDialog(johnny, randMsg(), randMsg(), JOptionPane.INFORMATION_MESSAGE, new ImageIcon("neon-snowboard.gif"));
+    }
+    
+    private Color randColor(){
+        Color[] colors = {Color.CYAN,Color.MAGENTA,Color.PINK,Color.RED,Color.GREEN,Color.YELLOW};
+        Random r = new Random();
+        return colors[r.nextInt(colors.length)];
+    }
+    
+    private String randMsg(){
+        String[] msgs = {"Alpha-numeric!", "ERROR ERROR THE PARTY IS TOO HARD.  ", "Off the hook!", "Mad props son!", "I'd bisect that angle!", "Not cool...PSYCHE!  Radtastic!",
+        "Word up g.", "Whoop dere it is!", "Wu Tang Clan Ain't Nothing To Trifle With In Test of Wits  ", "Diversify your bonds.", "Far out!", "Slam dunk the funk!", " SLAMMA JAMMA",
+        "BOOM SHAKALAKA!", "Vonnegut is much more fatalistic than Heller, though his humour alleviates any sense of dread.  "};
+        Random r = new Random();
+        return msgs[r.nextInt(msgs.length)];
+    }
+    
    
     
     

@@ -2,9 +2,11 @@
 //CMPUT 305 Assn 5 - Swing & You!
 
 package cmput305assn5;
+import java.awt.Color;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemListener;
 import javax.swing.JTable;
-import javax.swing.table.TableModel;
+
 
 
 public class ListGUI extends javax.swing.JFrame {
@@ -23,6 +25,10 @@ public class ListGUI extends javax.swing.JFrame {
     
     public void setEnabledDeleteButton(boolean status) {
         deleteButton.setEnabled(status);
+    }
+    
+    public void addExtremeButtonListener(ItemListener il){
+        extremeToggle.addItemListener(il);
     }
     
     public JTable getCourseTable() {
@@ -47,9 +53,11 @@ public class ListGUI extends javax.swing.JFrame {
         newButton = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JSeparator();
         deleteButton = new javax.swing.JButton();
+        extremeToggle = new javax.swing.JToggleButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Address Book");
+        setTitle("EXTREME Address Book");
+        setBackground(new java.awt.Color(153, 153, 153));
         setResizable(false);
 
         jSplitPane1.setDividerLocation(270);
@@ -91,11 +99,15 @@ public class ListGUI extends javax.swing.JFrame {
         deleteButton.setText("Delete");
         deleteButton.setEnabled(false);
 
+        extremeToggle.setText("EXTREME MODE");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jSplitPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(newButton)
@@ -103,7 +115,9 @@ public class ListGUI extends javax.swing.JFrame {
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 6, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(deleteButton)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(extremeToggle)
+                .addGap(31, 31, 31))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -112,7 +126,9 @@ public class ListGUI extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(newButton)
-                        .addComponent(deleteButton, javax.swing.GroupLayout.Alignment.TRAILING))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(deleteButton)
+                            .addComponent(extremeToggle)))
                     .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jSplitPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -126,6 +142,7 @@ public class ListGUI extends javax.swing.JFrame {
     private javax.swing.JTable courseTable;
     private javax.swing.JButton deleteButton;
     private javax.swing.JTextArea detailsTextField;
+    private javax.swing.JToggleButton extremeToggle;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
