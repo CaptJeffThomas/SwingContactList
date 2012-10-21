@@ -17,7 +17,7 @@ public class ListController {
     private ListGUI view;
     private JTable contactTable;
     private DefaultTableModel tableModel;
-    
+    private Contact newContact;
     
     
     public ListController(ListGUI gui){
@@ -31,7 +31,6 @@ public class ListController {
         
         initTableModel();
         initListSelectionModel();
-        
         
     }
     
@@ -54,9 +53,10 @@ public class ListController {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-           Object[] yup = {"big dog", "jericho"};
-           contactList.add(new Contact("big dog", "williams", "jericho@internets.ca", "780-5557", "heisenberg work phone"));
-           tableModel.addRow(yup);
+           ContactMenu contactMenu = new ContactMenu();
+           contactMenu.addCancelButtonListener(new CancelButtonListener(contactMenu));
+           contactMenu.addOKButtonListener(new OkButtonListener(contactMenu));
+           contactMenu.setVisible(true);
         }
     }
     
@@ -89,6 +89,39 @@ public class ListController {
             }
         }
     }
+    
+    //closes new contact menu
+    private class CancelButtonListener implements ActionListener {
+
+        private ContactMenu menu; //holds the reference to the created ContactMenu. needed to close frame.
+        
+        public CancelButtonListener(ContactMenu menu){
+            this.menu = menu;
+        }
+        
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            menu.setVisible(false);
+            
+        }
+        
+    }
+      
+    //verifies and adds a new contact to the list/table
+    private class OkButtonListener implements ActionListener {
+        
+        private ContactMenu menu; //holds the reference to the created ContactMenu. needed to close frame.
+        
+        private OkButtonListener(ContactMenu menu){
+            this.menu = menu;
+        }
+        
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            menu.setVisible(false);
+        }
+    }
+
     
     //fills the detailed tab with selected contact info
     private void detailedDisplay(Contact c){
